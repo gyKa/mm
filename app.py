@@ -2,6 +2,7 @@ import csv
 import youtube_dl
 import os
 
+
 def download(song, filename):
     ydl_opts = {
         'format': 'bestaudio/best',
@@ -16,7 +17,8 @@ def download(song, filename):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([song])
 
-with open('songs.csv') as csv_file:
+
+with open('list.csv') as csv_file:
     reader = csv.reader(csv_file, delimiter=',')
 
     for row in reader:
