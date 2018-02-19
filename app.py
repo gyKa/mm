@@ -5,6 +5,7 @@ import os
 playlists = {}
 extension = 'mp3'
 
+
 def download(song, filename):
     ydl_opts = {
         'format': 'bestaudio/best',
@@ -17,10 +18,23 @@ def download(song, filename):
     }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(song, download=False)
+        info = ydl.extract_info(song, download=True)
         info['ext'] = extension
 
         return ydl.prepare_filename(info)
+
+
+def generate_playlist(list, filename):
+    if list is "":
+        return
+
+    playlist_list = list.split(' ')
+
+    for playlist_title in playlist_list:
+        if playlist_title in playlists.keys():
+            playlists[playlist_title].append(filename)
+        else:
+            playlists[playlist_title] = [filename]
 
 
 with open('list.csv') as csv_file:
@@ -28,16 +42,6 @@ with open('list.csv') as csv_file:
 
     for row in reader:
         filename = download(row[0], row[1])
-
-        try:
-            playlist_list = row[2].split(' ')
-
-            for playlist_title in playlist_list:
-                if playlist_title in playlists.keys():
-                    playlists[playlist_title].append(filename)
-                else:
-                    playlists[playlist_title] = [filename]
-        except IndexError:
-            pass
+        generate_playlist(row[2], filename)
 
     print(playlists)
